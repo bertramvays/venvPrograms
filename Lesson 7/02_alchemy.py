@@ -4,11 +4,11 @@
 # Реализовать следующие элементы: Вода, Воздух, Огонь, Земля, Шторм, Пар, Грязь, Молния, Пыль, Лава.
 # Каждый элемент организовать как отдельный класс.
 # Таблица преобразований:
-#   Вода + Воздух = Шторм
-#   Вода + Огонь = Пар
-#   Вода + Земля = Грязь
-#   Воздух + Огонь = Молния
-#   Воздух + Земля = Пыль
+#   +Вода + Воздух = Шторм
+#   +Вода + Огонь = Пар
+#   +Вода + Земля = Грязь
+#   +Воздух + Огонь = Молния
+#   +Воздух + Земля = Пыль
 #   Огонь + Земля = Лава
 
 # Сложение элементов реализовывать через __add__
@@ -31,12 +31,12 @@ class Water:
 
         if other.name == 'air':
             return Storm()
-        elif other.name == Fire():
+        elif other.name == 'fire':
             return Steam()
-        elif other.name == Ground():
+        elif other.name == 'ground':
             return Dirt()
         else:
-            return 'Hello'
+            return None
 
 
 class Air:
@@ -52,6 +52,8 @@ class Air:
             return Flash()
         elif other.name == 'ground':
             return Dust()
+        elif other.name == 'water':
+            return Storm()
         else:
             return None
 
@@ -67,6 +69,10 @@ class Fire:
     def __add__(self, other):
         if other.name == "ground":
             return Lava()
+        elif other.name == 'air':
+            return Flash()
+        elif other.name == 'water':
+            return Steam()
         else:
             return None
 
@@ -78,6 +84,16 @@ class Ground:
 
     def __str__(self):
         return 'I\'m ground'
+
+    def __add__(self, other):
+        if other.name == "fire":
+            return Lava()
+        elif other.name == 'air':
+            return Dust()
+        elif other.name == 'water':
+            return Dirt()
+        else:
+            return None
 
 
 class Storm:
@@ -133,5 +149,15 @@ class Lava:
         return 'I\'m lava'
 
 
-print(Water(), '+', Air(), '=', Water() + Air())
-print(Fire(), '+', Air(), '=', Fire() + Air())
+# print(Water(), '+', Air(), '=', Water() + Air())
+# print(Water(), '+', Air(), '=', Air() + Water())
+# print(Fire(), '+', Air(), '=', Fire() + Air())
+# print(Fire(), '+', Air(), '=', Air() + Fire())
+# print(Water(), '+', Fire(), '=', Water() + Fire())
+# print(Water(), '+', Fire(), '=', Fire() + Water())
+# print(Water(), '+', Ground(), '=', Water() + Ground())
+# print(Water(), '+', Ground(), '=', Ground() + Water())
+# print(Air(), '+', Ground(), '=', Air() + Ground())
+# print(Air(), '+', Ground(), '=', Ground() + Air())
+print(Fire(), '+', Ground(), '=', Fire() + Ground())
+print(Fire(), '+', Ground(), '=', Ground() + Fire())
