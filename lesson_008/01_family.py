@@ -49,6 +49,7 @@ class House:
         self.money = 100
         self.food = 50
         self.dirt = 0
+        self.cat_food = 30
 
     def act(self):
         self.dirt += 5
@@ -71,6 +72,9 @@ class Human:
         return (colored(f'{self.name} >> '
                         f'уровень сытости: {self.fullness}, '
                         f'уровень счатья: {self.happiness}.', color='yellow'))
+
+    def petting_cat(self):
+        self.happiness += 5
 
 
 class Husband(Human):
@@ -104,6 +108,13 @@ class Husband(Human):
         self.happiness += 20
         self.fullness -= 10
         cprint(f'{self.name} - поиграл.', color='blue')
+
+    def buy_cat_food(self):
+        if self.house.money > 30:
+            self.house.cat_food += 30
+            self.house.money -= 30
+        else:
+            cprint(f'нет денег купить коту еды. Завтра пойду на работу', color='red')
 
     def act(self):
         if self.fullness < 0:
@@ -222,49 +233,74 @@ for day in range(365):
 print(f'За год семья заработала денег: {Husband.total_earned_money}, '
       f'сьела еды: {Human.total_eated_food} , купила шуб: {Wife.total_fur_coats}.')
 
-# TODO после реализации первой части - отдать на проверку учителю
+
 
 ######################################################## Часть вторая
 #
 # После подтверждения учителем первой части надо
 # отщепить ветку develop и в ней начать добавлять котов в модель семьи
 #
-# Кот может:
-#   есть,
-#   спать,
-#   драть обои
+# +Кот может:
+# +  есть,
+# +  спать,
+# +  драть обои
+#+
+# +Люди могут:
+# +  гладить кота (растет степень счастья на 5 пунктов)
+#+
+# +В доме добавляется:
+# +  еда для кота (в начале - 30)
 #
-# Люди могут:
-#   гладить кота (растет степень счастья на 5 пунктов)
+# +У кота есть имя и степень сытости (в начале - 30)
+# +Любое действие кота, кроме "есть", приводит к уменьшению степени сытости на 10 пунктов
+# +Еда для кота покупается за деньги: за 10 денег 10 еды.
+# +Кушает кот максимум по 10 единиц еды, степень сытости растет на 2 пункта за 1 пункт еды.
+# +Степень сытости не должна падать ниже 0, иначе кот умрет от голода.
 #
-# В доме добавляется:
-#   еда для кота (в начале - 30)
-#
-# У кота есть имя и степень сытости (в начале - 30)
-# Любое действие кота, кроме "есть", приводит к уменьшению степени сытости на 10 пунктов
-# Еда для кота покупается за деньги: за 10 денег 10 еды.
-# Кушает кот максимум по 10 единиц еды, степень сытости растет на 2 пункта за 1 пункт еды.
-# Степень сытости не должна падать ниже 0, иначе кот умрет от голода.
-#
-# Если кот дерет обои, то грязи становится больше на 5 пунктов
+# +Если кот дерет обои, то грязи становится больше на 5 пунктов
 
 
 class Cat:
 
-    def __init__(self):
-        pass
+    def __init__(self, name, house):
+        self.name = name
+        self.fullness = 30
+        self.house = house
 
-    def act(self):
-        pass
+    def __str__(self):
+        return 'Кот {} имеет сытость {}.'.format(
+            self.name, self.fullness)
 
     def eat(self):
-        pass
+        if self.house.cat_food >= 10:
+            cprint(f'Кот {self.name} покушал.', color='blue')
+            self.fullness += 20
+            self.house.cat_food -= 10
+        else:
+            cprint('{} нет еды для кота '.format(self.name), color='red')
 
     def sleep(self):
-        pass
+        self.fullness -= 10
+        cprint(f'Кот {self.name} спит.', color='blue')
 
-    def soil(self):
-        pass
+    def tear_wallpaper(self):
+        self.fullness -= 10
+        self.house.dirt += 5
+        cprint(f'Кот {self.name} подрал обои.', color='blue')
+
+    def act(self):
+
+        if self.fullness < 0:
+            cprint('Кот {} умер...'.format(self.name), color='red')
+            return
+
+        dice = randint(1, 6)
+        if self.fullness < 20:
+            self.eat()
+        elif dice == 1 or dice == 4:
+            self.tear_wallpaper()
+        else:
+            self.sleep()
 
 
 ######################################################## Часть вторая бис
