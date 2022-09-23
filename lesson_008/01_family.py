@@ -4,6 +4,7 @@ from termcolor import cprint, colored
 from random import randint
 
 
+
 ######################################################## Часть первая
 #
 # Создать модель жизни небольшой семьи.
