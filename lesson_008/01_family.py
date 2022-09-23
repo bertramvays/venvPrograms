@@ -4,7 +4,6 @@ from termcolor import cprint, colored
 from random import randint
 
 
-
 ######################################################## Часть первая
 #
 # Создать модель жизни небольшой семьи.
@@ -50,6 +49,7 @@ class House:
         self.money = 100
         self.food = 50
         self.dirt = 0
+        self.cat_food = 30
 
     def act(self):
         self.dirt += 5
@@ -72,6 +72,10 @@ class Human:
         return (colored(f'{self.name} >> '
                         f'уровень сытости: {self.fullness}, '
                         f'уровень счатья: {self.happiness}.', color='yellow'))
+
+    def petting_cat(self):
+        self.happiness += 5
+        print(f'{self.name} гладит кота. Кот мурлыкает.')
 
 
 class Husband(Human):
@@ -106,6 +110,13 @@ class Husband(Human):
         self.fullness -= 10
         cprint(f'{self.name} - поиграл.', color='blue')
 
+    def buy_cat_food(self):
+        if self.house.money > 30:
+            self.house.cat_food += 30
+            self.house.money -= 30
+        else:
+            cprint(f'нет денег купить коту еды. Завтра пойду на работу', color='red')
+
     def act(self):
         if self.fullness < 0:
             print(colored(f'{self.name} умер!!!!', color='red'))
@@ -126,6 +137,8 @@ class Husband(Human):
             self.work()
         elif dice == 3:
             self.eat()
+        elif dice == 4:
+            self.petting_cat()
         else:
             self.gaming()
 
@@ -199,10 +212,12 @@ class Wife(Human):
                 self.clean_house()
             else:
                 self.eat()
-        elif dice == 3 or dice == 4:
+        elif dice == 3:
             self.shopping()
-        elif dice == 5:
+        elif dice == 4:
             self.buy_fur_coat()
+        elif dice == 5:
+            self.petting_cat()
         else:
             self.eat()
 
@@ -282,7 +297,7 @@ for day in range(365):
 print(f'За год семья заработала денег: {Husband.total_earned_money}, '
       f'сьела еды: {Human.total_eated_food} , купила шуб: {Wife.total_fur_coats}.')
 
-# TODO после реализации первой части - отдать на проверку учителю
+
 
 ######################################################## Часть вторая
 #
@@ -309,9 +324,49 @@ print(f'За год семья заработала денег: {Husband.total_e
 # Если кот дерет обои, то грязи становится больше на 5 пунктов
 
 
+class Cat:
+
+    def __init__(self, name, house):
+        self.name = name
+        self.fullness = 30
+        self.house = house
+
+    def __str__(self):
+        return 'Кот {} имеет сытость {}.'.format(
+            self.name, self.fullness)
+
+    def eat(self):
+        if self.house.cat_food >= 10:
+            cprint(f'Кот {self.name} покушал.', color='blue')
+            self.fullness += 20
+            self.house.cat_food -= 10
+        else:
+            cprint('{} нет еды для кота '.format(self.name), color='red')
+
+    def sleep(self):
+        self.fullness -= 10
+        cprint(f'Кот {self.name} спит.', color='blue')
+
+    def tear_wallpaper(self):
+        self.fullness -= 10
+        self.house.dirt += 5
+        cprint(f'Кот {self.name} подрал обои.', color='blue')
+
+    def act(self):
+
+        if self.fullness < 0:
+            cprint('Кот {} умер...'.format(self.name), color='red')
+            return
+
+        dice = randint(1, 6)
+        if self.fullness < 20:
+            self.eat()
+        elif dice == 1 or dice == 4:
+            self.tear_wallpaper()
+        else:
+            self.sleep()
 
 
-#TODO закончил сдесь
 ######################################################## Часть вторая бис
 #
 # После реализации первой части надо в ветке мастер продолжить работу над семьей - добавить ребенка
