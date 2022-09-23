@@ -75,6 +75,7 @@ class Human:
 
     def petting_cat(self):
         self.happiness += 5
+        print(f'{self.name} гладит кота. Кот мурлыкает.')
 
 
 class Husband(Human):
@@ -136,6 +137,8 @@ class Husband(Human):
             self.work()
         elif dice == 3:
             self.eat()
+        elif dice == 4:
+            self.petting_cat()
         else:
             self.gaming()
 
@@ -209,10 +212,12 @@ class Wife(Human):
                 self.clean_house()
             else:
                 self.eat()
-        elif dice == 3 or dice == 4:
+        elif dice == 3:
             self.shopping()
-        elif dice == 5:
+        elif dice == 4:
             self.buy_fur_coat()
+        elif dice == 5:
+            self.petting_cat()
         else:
             self.eat()
 
