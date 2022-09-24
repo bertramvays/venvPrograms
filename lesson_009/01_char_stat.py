@@ -42,7 +42,35 @@ class Count_letters:
                         else:
                             self.characters_count[ch] = 0
 
-        return dict(sorted(self.characters_count.items()))
+    def result_dict(self):
+        self.cnt_letters()
+        return self.characters_count
+
+
+# После выполнения первого этапа нужно сделать упорядочивание статистики
+#  - по частоте по возрастанию
+#  - по алфавиту по возрастанию
+#  - по алфавиту по убыванию
+# Для этого пригодится шаблон проектирование "Шаблонный метод" см https://goo.gl/Vz4828
+class Count_letters_sorted(Count_letters):
+
+    def __init__(self, file):
+        super().__init__(file)
+
+    def sort_quant_ascend(self):
+        print(f"{'Сортировка по возрастанию частоты букв':*^60}")
+        self.characters_count = self.result_dict()
+        return dict(sorted(self.characters_count.items(), key=lambda x: x[1]))
+
+    def sort_alfa_ascend(self):
+        print(f"{'Сортировка по возрастанию позиции букв':*^60}")
+        self.characters_count = self.result_dict()
+        return dict(sorted(self.characters_count.items(), key=lambda x: x[0], reverse=False))
+
+    def sort_alfa_descend(self):
+        print(f"{'Сортировка по спаданию позиции букв':*^60}")
+        self.characters_count = self.result_dict()
+        return dict(sorted(self.characters_count.items(), key=lambda x: x[0], reverse=True))
 
 
 class FineLineSeparator:
@@ -78,13 +106,7 @@ class FineLineSeparator:
         self.separate_line()
 
 
-voyna_i_mir_counting = Count_letters('voyna-i-mir.txt')
-voyna_counted_dict = Count_letters.cnt_letters(voyna_i_mir_counting)
+voyna_i_mir_counting = Count_letters_sorted('voyna-i-mir.txt')
+voyna_counted_dict = Count_letters_sorted.sort_alfa_descend(voyna_i_mir_counting)
 c = FineLineSeparator(voyna_counted_dict)
 FineLineSeparator.result_table(c)
-
-# После выполнения первого этапа нужно сделать упорядочивание статистики
-#  - по частоте по возрастанию
-#  - по алфавиту по возрастанию
-#  - по алфавиту по убыванию
-# Для этого пригодится шаблон проектирование "Шаблонный метод" см https://goo.gl/Vz4828
